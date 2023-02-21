@@ -4,6 +4,8 @@ Course: CPSC 390-01
 
 Date: 2/20/2023
 
+## Team
+
 Ronan Kearns
 
 ID: 2366311
@@ -15,6 +17,8 @@ Samith
 ID:
 
 Email:
+
+## Explanantion
 
 <img width="228" alt="Screen Shot 2023-02-20 at 4 35 42 PM" src="https://user-images.githubusercontent.com/90280289/220218068-ebc9b588-afbb-4222-aa90-9da2754c61b4.png">
 
