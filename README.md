@@ -16,9 +16,14 @@ ID:
 
 Email:
 
+<img width="228" alt="Screen Shot 2023-02-20 at 4 35 42 PM" src="https://user-images.githubusercontent.com/90280289/220218068-ebc9b588-afbb-4222-aa90-9da2754c61b4.png">
+
 # Task 1: Solution to Basic Graph:
 
 `Solution path: <Node S>, <Node C>, <Node G>`
+
+<img width="585" alt="Screen Shot 2023-02-20 at 4 36 00 PM" src="https://user-images.githubusercontent.com/90280289/220218093-b0fd4bed-5c8d-4083-a59f-9f22f0366cf1.png">
+
 
 # Task 2: Romania Map Best First Search Solution:
   
