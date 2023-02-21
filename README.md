@@ -1,20 +1,19 @@
 # Uniform Cost and Best First Search Solutions
 
-# Course: CPSC 390-01
+Course: CPSC 390-01
 
-# Date: 2/20/2023
+Date: 2/20/2023
+Ronan Kearns
 
-# Ronan Kearns
+ID: 2366311
 
-# ID: 2366311
+Email: rkearns@chapman.edu
 
-# Email: rkearns@chapman.edu
+Samith
 
-# Samith
+ID:
 
-# ID:
-
-# Email:
+Email:
 
 # Task 1: Solution to Basic Graph:
 
