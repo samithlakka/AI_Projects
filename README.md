@@ -18,8 +18,8 @@ Email:
 
 # Task 1: Solution to Basic Graph:
 
-"Solution path: <Node S>, <Node C>, <Node G>"
+...Solution path: <Node S>, <Node C>, <Node G>...
 
 # Task 2: Romania Map Best First Search Solution:
-
-"Solution path: <Node Arad>, <Node Sibiu>, <Node Rimnicu>, <Node Pitesti>, <Node Bucharest>"
+  
+...Solution path: <Node Arad>, <Node Sibiu>, <Node Rimnicu>, <Node Pitesti>, <Node Bucharest>...
