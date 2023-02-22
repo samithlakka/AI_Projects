@@ -1,3 +1,7 @@
+#Contributions
+#Together: We both collaborated in class to finish the code.
+#Ronan: Found the Task 1 and Task 2 answers.
+#Samith: Wrote the comments.
 import sys
 from collections import deque
 
@@ -5,31 +9,39 @@ from utils import *
 
 
 class Problem:
+    
+    #The constructor sets the starting state and sometimes a goal state, if there is only one. Additional arguments can be added by your subclass's constructor.
     def __init__(self, initial, goal=None):
         self.initial = initial
         self.goal = goal
-
+        
+    #This function returns a list of possible actions that can be taken in a given state. If there are many actions, it is recommended to use an iterator instead of building the entire list at once.
     def actions(self, state):
         raise NotImplementedError
-
+        
+    #This function takes in a state and an action and returns the resulting state after executing the given action in the given state. The action must be one of the possible actions that can be taken in the given state, which are obtained by calling the actions(state) function.
     def result(self, state, action):
         raise NotImplementedError
 
+    #This function returns a boolean value indicating whether the given state is a goal state or not. By default, it checks if the state is equal to the self.goal attribute or if the state is in the self.goal list. If checking against a single goal is not sufficient, this function can be overridden to define a more customized goal-checking method.
     def goal_test(self, state):
         if isinstance(self.goal, list):
             return is_in(state, self.goal)
         else:
             return state == self.goal
 
+    #This function calculates the cost of a solution path that starts at state1, applies an action, and arrives at state2, given the cost c to reach state1. If the problem does not require considering the path taken, the function only considers state2. However, if the path taken is relevant, the function may also consider state1 and action. By default, this function assumes that each step in the path has a cost of 1
     def path_cost(self, c, state1, action, state2):
         return c + 1
 
+    #In optimization problems, every state is assigned a value, and algorithms such as Hill Climbing attempt to maximize this value.
     def value(self, state):
         raise NotImplementedError
 
 
 class Node:
 
+    #This code creates a new node in a search tree. The node is derived from a parent node by applying an action to it.
     def __init__(self, state, parent=None, action=None, path_cost=0):
         self.state = state
         self.parent = parent
@@ -38,17 +50,21 @@ class Node:
         self.depth = 0
         if parent:
             self.depth = parent.depth + 1
-
+    
+    #This functions returns a string representation of the object. Specifically, when called on an instance of the Node class, it returns a string in the format of "<Node state>", where state is the state attribute of the Node object. This function is typically used for debugging and printing information about the object.
     def __repr__(self):
         return "<Node {}>".format(self.state)
 
+    #Defines the comparison of two Node objects by their state values.
     def __lt__(self, node):
         return self.state < node.state
 
+    #Given a problem, returns a list of child nodes for the current node.
     def expand(self, problem):
         return [self.child_node(problem, action)
                 for action in problem.actions(self.state)]
 
+    #Creates a new Node with the state resulting from applying the given action to the current node's state. The new node is connected to the current node.
     def child_node(self, problem, action):
         """[Figure 3.10]"""
         next_state = problem.result(self.state, action)
@@ -56,45 +72,28 @@ class Node:
             self.path_cost, self.state, action, next_state))
         return next_node
 
+    #Returns the list of actions taken to reach the current node's state from the root node's state.
     def solution(self):
         return [node.action for node in self.path()[1:]]
 
+    #Returns a list of nodes representing the path from the root node to the current node.
     def path(self):
         node, path_back = self, []
         while node:
             path_back.append(node)
             node = node.parent
         return list(reversed(path_back))
-
-    # We want for a queue of nodes in breadth_first_graph_search or
-    # astar_search to have no duplicated states, so we treat nodes
-    # with the same state as equal. [Problem: this may not be what you
-    # want in other contexts.]
-
+     
+    #Compares two Node objects for equality based on their state values.
     def __eq__(self, other):
         return isinstance(other, Node) and self.state == other.state
-
+        
+    #Returns the hash value of the Node object based on its state value.
     def __hash__(self):
-        # We use the hash value of the state
-        # stored in the node instead of the node
-        # object itself to quickly search a node
-        # with the same state in a Hash Table
         return hash(self.state)
 
-
+#A class that represents a graph, where nodes are connected by edges (links). Supports adding links between nodes with associated distances, as well as getting a list of nodes and their links.
 class Graph:
-    """A graph connects nodes (vertices) by edges (links). Each edge can also
-    have a length associated with it. The constructor call is something like:
-        g = Graph({'A': {'B': 1, 'C': 2})
-    this makes a graph with 3 nodes, A, B, and C, with an edge of length 1 from
-    A to B,  and an edge of length 2 from A to C. You can also do:
-        g = Graph({'A': {'B': 1, 'C': 2}, directed=False)
-    This makes an undirected graph, so inverse links are also added. The graph
-    stays undirected; if you add more links with g.connect('B', 'C', 3), then
-    inverse link is also added. You can use g.nodes() to get a list of nodes,
-    g.get('A') to get a dict of links out of A, and g.get('A', 'B') to get the
-    length of the link from A to B. 'Lengths' can actually be any object at
-    all, and nodes can be any hashable object."""
 
     def __init__(self, graph_dict=None, directed=True):
         self.graph_dict = graph_dict or {}
@@ -102,12 +101,14 @@ class Graph:
         if not directed:
             self.make_undirected()
 
+    #If the graph is directed, makes it undirected by adding edges in the opposite direction for each existing edge.
     def make_undirected(self):
         """Make a digraph into an undirected graph by adding symmetric edges."""
         for a in list(self.graph_dict.keys()):
             for (b, dist) in self.graph_dict[a].items():
                 self.connect1(b, a, dist)
 
+    #Adds a link from node A to node B with the given distance. If the graph is undirected, also adds a link from node B to node A.
     def connect(self, A, B, distance=1):
         """Add a link from A and B of given distance, and also add the inverse
         link if the graph is undirected."""
@@ -119,6 +120,7 @@ class Graph:
         """Add a link from A to B of given distance, in one direction only."""
         self.graph_dict.setdefault(A, {})[B] = distance
 
+    #Returns the distance between nodes a and b if b is specified, otherwise returns a dictionary of links from node a to its neighbors.
     def get(self, a, b=None):
         """Return a link distance or a dict of {node: distance} entries.
         .get(a,b) returns the distance or None;
@@ -129,6 +131,7 @@ class Graph:
         else:
             return links.get(b)
 
+    #Returns a list of nodes in the graph.
     def nodes(self):
         """Return a list of nodes in the graph."""
         s1 = set([k for k in self.graph_dict.keys()])
@@ -137,12 +140,12 @@ class Graph:
         nodes = s1.union(s2)
         return list(nodes)
 
-
+#A function that returns an undirected Graph object, which is a Graph object with the directed flag set to False.
 def UndirectedGraph(graph_dict=None):
     """Build a Graph where every edge (including future ones) goes both ways."""
     return Graph(graph_dict=graph_dict, directed=False)
 
-
+#A class that represents a priority queue, where items are popped from the queue in order of priority (determined by a function f). Supports appending items to the queue and getting the size of the queue.
 class PriorityQueue:
     """A Queue in which the minimum (or maximum) element (as determined by f and
     order) is returned first.
@@ -159,77 +162,72 @@ class PriorityQueue:
         else:
             raise ValueError("Order must be either 'min' or 'max'.")
 
+    #Insert item at its correct position.
     def append(self, item):
-        """Insert item at its correct position."""
         heapq.heappush(self.heap, (self.f(item), item))
 
+    #Insert each item in items at its correct position.
     def extend(self, items):
-        """Insert each item in items at its correct position."""
         for item in items:
             self.append(item)
-
+    #Pop and return the item (with min or max f(x) value) depending on the order.
     def pop(self):
-        """Pop and return the item (with min or max f(x) value)
-        depending on the order."""
         if self.heap:
             return heapq.heappop(self.heap)[1]
         else:
-            raise Exception('Trying to pop from empty PriorityQueue.')
-
+            raise Exception
+    #Return current capacity of PriorityQueue.
     def __len__(self):
-        """Return current capacity of PriorityQueue."""
         return len(self.heap)
 
+    #Return True if the key is in PriorityQueue.
     def __contains__(self, key):
-        """Return True if the key is in PriorityQueue."""
         return any([item == key for _, item in self.heap])
 
+    #Returns the first value associated with key in PriorityQueue. Raises KeyError if key is not present.
     def __getitem__(self, key):
-        """Returns the first value associated with key in PriorityQueue.
-        Raises KeyError if key is not present."""
         for value, item in self.heap:
             if item == key:
                 return value
         raise KeyError(str(key) + " is not in the priority queue")
 
+    #Delete the first occurrence of key.
     def __delitem__(self, key):
-        """Delete the first occurrence of key."""
         try:
             del self.heap[[item == key for _, item in self.heap].index(True)]
         except ValueError:
             raise KeyError(str(key) + " is not in the priority queue")
         heapq.heapify(self.heap)
 
-
+#The problem of searching a graph from one node to another.
 class GraphProblem(Problem):
-    """The problem of searching a graph from one node to another."""
 
     def __init__(self, initial, goal, graph):
         super().__init__(initial, goal)
         self.graph = graph
 
+    #The actions at a graph node are just its neighbors.
     def actions(self, A):
-        """The actions at a graph node are just its neighbors."""
         return list(self.graph.get(A).keys())
 
+    #The result of going to a neighbor is just that neighbor.
     def result(self, state, action):
-        """The result of going to a neighbor is just that neighbor."""
         return action
 
     def path_cost(self, cost_so_far, A, action, B):
         return cost_so_far + (self.graph.get(A, B) or np.inf)
 
+    #Find minimum value of edges.
     def find_min_edge(self):
-        """Find minimum value of edges."""
         m = np.inf
         for d in self.graph.graph_dict.values():
             local_min = min(d.values())
             m = min(m, local_min)
 
         return m
-
+    #h function is straight-line distance from a node's state to goal.
     def h(self, node):
-        """h function is straight-line distance from a node's state to goal."""
+        
         locs = getattr(self.graph, 'locations', None)
         if locs:
             if type(node) is str:
@@ -239,15 +237,9 @@ class GraphProblem(Problem):
         else:
             return np.inf
 
-
+#Search the nodes with the lowest f scores first. You specify the function f(node) that you want to minimize; for example,if f is a heuristic estimate to the goal, then we have greedy best first search; if f is node.depth then we have breadth-first search.There is a subtlety: the line "f = memoize(f, 'f')" means that the f values will be cached on the nodes as they are computed. So after doing a best first search you can examine the f values of the path returned.
 def best_first_graph_search(problem, f, display=False):
-    """Search the nodes with the lowest f scores first.
-    You specify the function f(node) that you want to minimize; for example,
-    if f is a heuristic estimate to the goal, then we have greedy best
-    first search; if f is node.depth then we have breadth-first search.
-    There is a subtlety: the line "f = memoize(f, 'f')" means that the f
-    values will be cached on the nodes as they are computed. So after doing
-    a best first search you can examine the f values of the path returned."""
+ 
     f = memoize(f, 'f')
     node = Node(problem.initial)
     frontier = PriorityQueue('min', f)
